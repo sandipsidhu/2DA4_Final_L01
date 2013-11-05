@@ -1,0 +1,18 @@
+#Ignore file types
+*.bat
+*.exe
+*.o
+*.a
+*.dll
+*.sublime-project
+*.sublime-workspace
+
+#Ignore directories
+
+#Ignore my dropbox files
+.dropbox
+
+#Specific OS hidden files
+Thumbs.db
+.DS_Store
+desktop.ini
