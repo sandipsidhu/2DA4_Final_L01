@@ -32,7 +32,7 @@ endmodule
 // Main clock runs at 27 MHz. So... 27 000 000 cycles per second = 27 000 times per ms.
 // According to http://www.humanbenchmark.com/tests/reactiontime/stats.php, average reaction time is 215 ms.
 // Personally, I'm getting like 300 ms. Someone really slow might probably get a second.
-// So.... let's make the slower clock run at around 270 times a second (1 000 000 times slower)
+// So.... let's make the slower clock run at around 27 times a second (1 000 000 times slower)
 module SlowerClock (inputClock, slowerClock);
 	input inputClock;
 	output reg slowerClock;
