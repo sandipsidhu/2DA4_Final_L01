@@ -1,0 +1,55 @@
+// So, good news: this compiles
+// Bad news, I can't check with the Quartus simulator since it only goes up to about 100 us
+// I'll try it on a board in the OLE labs when I get a chance. Hopefully nothing blows up...
+// It's not gonna blow up is it? I mean one of the variables count to 1 million before resetting.... that's a lot....
+
+
+module ReactionTimer (CLOCK_27, gameOn, start, stop, reactionTime);
+	input CLOCK_27, gameOn, start, stop;
+	output reg [10:0] reactionTime;
+	
+	reg [10:0] counter;
+	
+	SlowerClock (CLOCK_27, slowerClock);
+	
+	always @(posedge slowerClock, posedge start)
+		begin
+			if (start) counter = 10'b0000000000;  // Let "start" be the same signal that causes the LED to light
+															  // So essentially, the counter resets when the LED lights up
+			else if (gameOn) counter = counter + 1'b1;  // gameOn is active when the sequence is running
+																	  // During the main menu or elsewhere, the counter won't be continuously counting
+		end
+		
+	always @(posedge stop)
+		begin
+			reactionTime = counter;  // The output is saved when the person hits "stop", which is flipping the correct switch up
+		end
+		
+endmodule 
+
+
+
+// Main clock runs at 27 MHz. So... 27 000 000 cycles per second = 27 000 times per ms.
+// According to http://www.humanbenchmark.com/tests/reactiontime/stats.php, average reaction time is 215 ms.
+// Personally, I'm getting like 300 ms. Someone really slow might probably get a second.
+// So.... let's make the slower clock run at around 270 times a second (1 000 000 times slower)
+module SlowerClock (inputClock, slowerClock);
+	input inputClock;
+	output reg slowerClock;
+	reg [20:0] counter;
+	
+	always @(posedge inputClock)
+		begin
+			if (counter == 20'b11111111111111111111)  // 2^20 = 1 048 576
+				begin
+					counter = 20'b00000000000000000000;
+					slowerClock = 1'b1;						// So the slower clock pulses up once every 2^20 times the fast clock goes
+				end
+			else
+				begin
+					counter = counter + 1'b1;
+					slowerClock = 1'b0;
+				end
+		end
+		
+endmodule 
